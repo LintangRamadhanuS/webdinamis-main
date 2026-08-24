@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+
+/* Mode gelap diaktifkan lewat class .dark di <html> (bukan cuma ikut preferensi OS),
+   supaya ada tombol toggle manual -- lihat useTheme.js & AppLayout.vue. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Bahasa animasi global aplikasi — dipakai lewat class `animate-*` di seluruh komponen. */
+    --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-fade-in: fade-in 0.45s ease-out both;
+    --animate-scale-in: scale-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    --animate-blob: blob 20s ease-in-out infinite;
+    --animate-shimmer: shimmer 1.8s linear infinite;
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-pulse-ring: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --animate-gradient-x: gradient-x 6s ease infinite;
+    --animate-spin-slow: spin-slow 3.5s linear infinite;
+}
+
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scale-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-25px, 25px) scale(0.94); }
+}
+
+@keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.85); opacity: 0.7; }
+    70%, 100% { transform: scale(1.7); opacity: 0; }
+}
+
+@keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Beri tahu browser skema warna yang SEDANG aktif -- supaya fitur "paksa gelap" bawaan
+       browser/OS (Chrome/Edge "force dark", dsb) tidak menimpa ulang warna di atas tema
+       aplikasi sendiri, dan supaya elemen native (scrollbar, form control) ikut menyesuaikan. */
+    color-scheme: light;
+}
+html.dark {
+    color-scheme: dark;
+}
+
+/* Transisi halus saat pindah mode terang/gelap, tanpa bikin animasi lain (hover dsb) ikut lambat. */
+body, .dark body {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+    background-color: #4f46e5;
+    color: #fff;
+}
+
+/* Scrollbar tipis & senada tema, dukungan Firefox + WebKit */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+.dark * {
+    scrollbar-color: #475569 transparent;
+}
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+.dark *::-webkit-scrollbar-thumb {
+    background-color: #475569;
+}
+.dark *::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b;
+}
+
+/* Efek kaca buram — dipakai di sidebar/topbar/kartu login di atas gradasi latar. */
+.glass {
+    background-color: rgb(255 255 255 / 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+.dark .glass {
+    background-color: rgb(15 23 42 / 0.7);
+}
+
+.glass-dark {
+    background-color: rgb(15 23 42 / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* Teks gradien untuk judul/aksen. */
+.text-gradient-brand {
+    background-image: linear-gradient(90deg, #4f46e5, #7c3aed, #c026d3);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Placeholder shimmer untuk skeleton loading. */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: #e2e8f0;
+}
+.dark .skeleton {
+    background-color: #334155;
+}
+.skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.6), transparent);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+}
+.dark .skeleton::after {
+    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.08), transparent);
+}
+
+/* Kartu dengan efek "angkat" halus saat hover — dipakai luas di seluruh dashboard. */
+.lift-on-hover {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+.lift-on-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgb(79 70 229 / 0.18);
+}
+.dark .lift-on-hover:hover {
+    box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.4);
+}

@@ -43,10 +43,9 @@ onMounted(fetchTransaksi);
 
 function formatTanggal(str) {
     if (!str) return '-';
-    const [datePart, timePart] = str.split(' ');
-    const [y, m, d] = datePart.split('-').map(Number);
+    const d = new Date(str);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    return `${d} ${months[m - 1]} ${y}, ${(timePart ?? '').slice(0, 5)}`;
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
 function openReview(t) {

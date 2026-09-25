@@ -33,8 +33,7 @@ Semua halaman dilindungi login (Laravel Sanctum, session-based SPA auth).
 ## Menjalankan secara lokal
 
 ```bash
-composer install
-npm install
+composer install && npm install
 
 cp .env.example .env
 php artisan key:generate
@@ -43,11 +42,12 @@ php artisan key:generate
 # (otomatis ikut jalan tiap `composer install`, tapi aman dijalankan manual juga):
 php artisan storage:link
 
-# Pilihan A — SQLite (paling simpel, tidak perlu setup database server):
-touch database/database.sqlite
+Pilihan
+  # Pilihan A — SQLite (paling simpel, tidak perlu setup database server):
+  touch database/database.sqlite
 
-# Pilihan B — MySQL: buat databasenya dulu (mis. lewat phpMyAdmin), lalu di .env
-# ubah DB_CONNECTION=mysql dan isi DB_DATABASE/DB_USERNAME/DB_PASSWORD (lihat komentar di .env.example).
+  # Pilihan B — MySQL: buat databasenya dulu (mis. lewat phpMyAdmin), lalu di .env
+  # ubah DB_CONNECTION=mysql dan isi DB_DATABASE/DB_USERNAME/DB_PASSWORD (lihat komentar di .env.example).
 
 php artisan migrate --seed
 

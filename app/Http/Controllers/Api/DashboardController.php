@@ -139,16 +139,20 @@ class DashboardController extends Controller
      */
     public function transaksiPerHari()
     {
-        $data = Transaksi::query()
-            ->selectRaw('DATE(tanggal) as tanggal, COUNT(*) as total')
+        // Ambil lewat Eloquent (bukan selectRaw) supaya 'tanggal' otomatis jadi Carbon
+        // (ikut cast di model), lalu grouping per tanggal LOKAL dilakukan di PHP —
+        // supaya transaksi dini hari WIB tidak nyasar ke hari sebelumnya seperti
+        // kalau dikelompokkan langsung dari nilai UTC di database.
+        $grouped = Transaksi::query()
             ->where('tanggal', '>=', now()->subDays(30))
-            ->groupBy('tanggal')
-            ->orderBy('tanggal')
-            ->get();
+            ->get(['tanggal'])
+            ->groupBy(fn ($t) => $t->tanggal->timezone('Asia/Jakarta')->toDateString())
+            ->map->count()
+            ->sortKeys();
 
         return response()->json([
-            'labels' => $data->pluck('tanggal'),
-            'values' => $data->pluck('total'),
+            'labels' => $grouped->keys()->values(),
+            'values' => $grouped->values(),
         ]);
     }
 

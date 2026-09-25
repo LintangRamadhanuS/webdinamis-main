@@ -13,6 +13,13 @@ class Transaksi extends Model
         'user_id', 'barang_id', 'status', 'tanggal'
     ];
 
+        protected function casts(): array
+    {
+        return [
+            'tanggal' => 'datetime',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

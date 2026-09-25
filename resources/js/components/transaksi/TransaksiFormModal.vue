@@ -23,9 +23,9 @@ watch(() => props.transaksi, (t) => {
     form.user_id = t?.user?.id ?? '';
     form.barang_id = t?.barang?.id ?? '';
     form.status = t?.status ?? 'pending';
-    // input datetime-local butuh "YYYY-MM-DDTHH:mm" — manipulasi string langsung (bukan lewat Date())
-    // supaya tidak salah geser timezone antara UTC dan waktu lokal.
-    form.tanggal = t?.tanggal ? t.tanggal.slice(0, 16).replace(' ', 'T') : toDatetimeLocal(new Date());
+    // "t.tanggal" dari API sekarang ISO UTC (setelah cast 'datetime' di model Transaksi),
+    // jadi konversi ke waktu lokal browser dulu sebelum diisikan ke input datetime-local.
+    form.tanggal = t?.tanggal ? toDatetimeLocal(new Date(t.tanggal)) : toDatetimeLocal(new Date());
 }, { immediate: true });
 
 const isValid = computed(() => {
@@ -35,7 +35,7 @@ const isValid = computed(() => {
 
 function handleSubmit() {
     if (!isValid.value) return;
-    const payload = { status: form.status, tanggal: form.tanggal };
+    const payload = { status: form.status, tanggal: new Date(form.tanggal).toISOString() };
     if (!props.transaksi) {
         payload.user_id = form.user_id;
         payload.barang_id = form.barang_id;

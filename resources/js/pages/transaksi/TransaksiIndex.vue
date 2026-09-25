@@ -58,10 +58,9 @@ onMounted(async () => {
 // "YYYY-MM-DD HH:mm:ss" -> "7 Agu 2026, 14:23" — manipulasi string langsung, bebas isu timezone.
 function formatTanggal(str) {
     if (!str) return '-';
-    const [datePart, timePart] = str.split(' ');
-    const [y, m, d] = datePart.split('-').map(Number);
+    const d = new Date(str);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    return `${d} ${months[m - 1]} ${y}, ${(timePart ?? '').slice(0, 5)}`;
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
 // Ubah status langsung dari dropdown di tabel tanpa buka modal.
